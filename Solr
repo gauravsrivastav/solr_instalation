@@ -1,0 +1,86 @@
+#Solr
+ 
+Solr is a search engine platform based on Apache Lucene. It is written in Java and uses the Lucene library to implement indexing. It can be accessed using a variety of REST APIs, including XML and JSON. This is the feature list from their website:
+Advanced Full-Text Search Capabilities 
+Optimized for High Volume Web Traffic 
+Standards Based Open Interfaces - XML, JSON and HTTP 
+Comprehensive HTML Administration Interfaces 
+Server statistics exposed over JMX for monitoring 
+Linearly scalable, auto index replication, auto failover and recovery 
+Near Real-time indexing 
+Flexible and Adaptable with XML configuration 
+Extensible Plugin Architecture 
+
+#Requiered 
+One 1 GB Ubuntu 14.04 Droplet at minimum, but the amount of RAM needed depends highly on your specific situation.
+
+Step 1   Setting up the Java Runtime Environment
+
+Solr is a Java application, so the Java runtime environment needs to be installed first in order to set up Solr.
+To update your system, execute the following command to update your system with latest patches and updates.
+
+$ sudo apt-get update && apt-get upgrade -y
+
+We have to install Python Software properties in order to install the latest Java 8. Run the following command to install the software.
+
+$ sudo apt-get install python-software-properties
+
+This will install the Java Runtime Environment (JRE). If you instead need the Java Development Kit (JDK), which is usually needed to compile Java applications (for example Apache Ant, Apache Maven, Eclipse and IntelliJ IDEA execute the following command:
+
+$sudo apt-get install default-jre
+
+$sudo apt-get install default-jdk
+
+That is everything that is needed to install Java. 
+To do this, add the unofficial Java installer repository:
+$ sudo add-apt-repository ppa:webupd8team/java
+Press [ENTER] when requested. Now, you can easily install the latest version of Java 8 with apt.
+First, update the package lists to fetch the available packages from the new PPA:
+$ sudo apt-get update 
+
+Then install the latest version of Oracle Java 8 with this command:
+
+$ sudo apt-get install oracle-java8-installer
+
+$ java -version
+
+Now you have installed Java 8 and we will move to the next step.
+Installing the Solr application
+
+copy the link of solr-5.3.1.tgz from the link. Version as per your choice 
+Then, download the file in your home directory or  app project directory:
+
+ $ cd  /Downlaods
+
+ $ wget http://archive.apache.org/dist/lucene/solr/5.3.1/solr-5.3.1.tgz
+
+Extract the service installation file and install Solr as a service using the script:
+
+ $ sudo tar   xzf  solr-5.3.1.tgz solr-5.3.1/bin/install_solr_service.sh --strip-components=2
+
+ $ sudo bash ./install_solr_service.sh solr-5.3.1.tgz
+
+Use this command to check the status of the service
+
+ $ sudo service solr status 
+ 
+Creating a Solr search collection:
+Using Solr, we can create multiple collections. Run the given command, mention the name of the collection (here gettingstarted) and specify its configurations. We run it as the Solr user in this case to avoid any permissions errors.
+
+$ sudo su - solr -c "/opt/solr/bin/solr create -c gettingstarted -n data_driven_schema_configs"
+
+The new core directory for our first collection has been created. To view the default schema file, got to:
+
+$ cd /opt/solr/server/solr/configsets/data_driven_schema_configs/conf
+
+In this command, gettingstarted is the name of the collection and -n specifies the configset. There are 3 config sets supplied by Solr by default; in this case, we have used one that is schemaless, which means that any field can be supplied, with any name, and the type will be guessed.
+You have now added the collection and can start adding data. The default schema has only one required field: id. It has no other default fields, only dynamic fields. If you want to have a look at the schema, where everything is explained clearly, have a look at the file /opt/solr/server/solr/gettingstarted/conf/schema.xml.
+
+
+
+So we can restrict connections to port 8983 as follows:
+
+$ sudo iptables -A INPUT -p tcp -s localhost --dport 8983 -j ACCEPT
+$ sudo iptables -A INPUT -p tcp -s YOUR_SERVERS_IP --dport 8983 -j ACCEPT
+$ sudo iptables -A INPUT -p tcp --dport 8983 -j DROP
+
